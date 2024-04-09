@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="referrer" content="never">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="ip,yiove">
+    <meta name="description" content="实时获取当前设备网络 IP 地址，支持多线路，包括中国移动、中国联通、中国电信、海外线路，以及访问谷歌等特殊网站。">
+    <title>IP 工具箱</title></head>
+  
+  <body>
+    <style>body { background: #ecf0f3; margin:0; padding:0; } .header{ background-color:#fff; font-size: larger; font-weight: 600; padding:10px 20px; } .title{ margin: 20px; padding: 10px; font-size: larger; font-weight: 600; line-height: 1em; } .container { display: grid; grid-gap: 5px; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); padding:10px 20px; } .box{ margin:10px; padding:20px; line-height: 2.5em; border-radius: 5px; box-shadow: 18px 18px 30px #d1d9e6, -18px -18px 30px #fff; } .box-title{ font-size: larger; font-weight: 600; line-height: 1em; margin-bottom:20px; padding-left: 10px; border-left-style:solid; } .box-title img{ margin-left: 10px; width: 1em; } .box-info{ color:#242424; } .search-box{ padding:10px 30px; } .search-box input{ line-height: inherit; border: 1px solid #cdcdcd; border-radius: 5px; height: 30px; width: 50%; min-width: 100px; padding: 2px 10px; } .search-box button { margin-left: 5px; padding: 2px 20px; line-height: 2.5em; border: 0; border-radius: 5px; box-shadow: 18px 18px 30px #d1d9e6, -18px -18px 30px #fff; } .search-box button:hover{ box-shadow: inset 18px 18px 30px #d1d9e6, inset -18px -18px 30px #fff; }</style>
+    <div class="header">IP 工具箱</div>
+    <div class="title">🕵️ IP 查询</div>
+    <div class="search-box">
+      <form onsubmit="return search()">
+        <input type="text" id="searchInput" placeholder="输入 IP 查询，支持 IPV4 和 IPV6">
+        <button type="submit">查询</button></form>
+    </div>
+    <div class="container">
+      <div class="box" id="search" style="display:none">
+        <div>运营商：
+          <span id="search-organization">查询中...</span></div>
+        <div>国家/地区代码：
+          <span id="search-country-code">查询中...</span></div>
+        <div>国家名称：
+          <span id="search-country">查询中...</span></div>
+        <div>地区名称：
+          <span id="search-region">查询中...</span></div>
+        <div>城市名称：
+          <span id="search-city">查询中...</span></div>
+        <div>经纬度：
+          <span id="search-tude">查询中...</span></div>
+        <div>时区：
+          <span id="search-timezone">查询中...</span></div>
+        <div>数据来源：ip.sb</div></div>
+    </div>
+    <div class="title">🕵️ IP 信息 (您的网络是
+      <span id="youxian"></span>优先)</div>
+    <div class="container">
+      <div class="box">
+        <div class="box-title">功能介绍</div>
+        <div class="box-info">1、支持多线路查看你的 IP 地址，隐藏功能就是看你的网络是否支持访问谷歌等网站。
+          <br>2、支持获取 IPv4 和 IPv6 。</div></div>
+      <div class="box">
+        <div class="box-title">中国移动</div>
+        <div class="box-info" id="cncm">
+          <div>来源：itdog.cn</div>
+          <div>IPv4：
+            <span id="cm-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="cm-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">中国联通</div>
+        <div class="box-info" id="cncu">
+          <div>来源：itdog.cn</div>
+          <div>IPv4：
+            <span id="cu-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="cu-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">中国电信</div>
+        <div class="box-info" id="cnct">
+          <div>来源：itdog.cn</div>
+          <div>IPv4：
+            <span id="ct-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="ct-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">海外、港澳台</div>
+        <div class="box-info" id="cnhk">
+          <div>来源：itdog.cn</div>
+          <div>IPv4：
+            <span id="hk-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="hk-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">IP.SB</div>
+        <div class="box-info" id="ipsb">
+          <div>ISP：
+            <span id="ipsb-isp">测试中...</span></div>
+          <div>IPv4：
+            <span id="ipsb-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="ipsb-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">谷歌等特殊网站</div>
+        <div class="box-info" id="haiwai">
+          <div>来源：lvhai.org</div>
+          <div>IPv4：
+            <span id="haiwai-ipv4">测试中...</span></div>
+          <div>IPv6：
+            <span id="haiwai-ipv6">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">国内环境</div>
+        <div class="box-info" id="ip-other">
+          <div>ip-api.io：
+            <span id="ip-api">测试中...</span></div>
+          <div>MyIP.la：
+            <span id="myip-la">测试中...</span></div>
+          <div>ipip.net：
+            <span id="ipip-net">测试中...</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="title">🕵️ 网络联通性</div>
+    <div class="container">
+      <div class="box">
+        <div class="box-title">功能介绍</div>
+        <div class="box-info">通过加载对应网站上的小图片进行测试，延迟值仅供参考，实际会更小。</div></div>
+      <div class="box">
+        <div class="box-title">Google
+          <span id="google-ico"></span></div>
+        <div class="box-info" id="google">
+          <div>状态：
+            <span id="google-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="google-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">YouTube
+          <span id="youtube-ico"></span></div>
+        <div class="box-info" id="youtube">
+          <div>状态：
+            <span id="youtube-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="youtube-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">Github
+          <span id="github-ico"></span></div>
+        <div class="box-info" id="github">
+          <div>状态：
+            <span id="github-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="github-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">CloudFlare
+          <span id="cloudflare-ico"></span></div>
+        <div class="box-info" id="cloudflare">
+          <div>状态：
+            <span id="cloudflare-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="cloudflare-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">OpenAI
+          <span id="openai-ico"></span></div>
+        <div class="box-info" id="openai">
+          <div>状态：
+            <span id="openai-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="openai-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">X (Twitter)
+          <span id="x-ico"></span></div>
+        <div class="box-info" id="x">
+          <div>状态：
+            <span id="x-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="x-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">微信
+          <span id="wechat-ico"></span></div>
+        <div class="box-info" id="wechat">
+          <div>状态：
+            <span id="wechat-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="wechat-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">百度
+          <span id="baidu-ico"></span></div>
+        <div class="box-info" id="baidu">
+          <div>状态：
+            <span id="baidu-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="baidu-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">腾讯视频
+          <span id="vqq-ico"></span></div>
+        <div class="box-info" id="vqq">
+          <div>状态：
+            <span id="vqq-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="vqq-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">爱奇艺
+          <span id="iqiyi-ico"></span></div>
+        <div class="box-info" id="iqiyi">
+          <div>状态：
+            <span id="iqiyi-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="iqiyi-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">芒果TV
+          <span id="mgtv-ico"></span></div>
+        <div class="box-info" id="mgtv">
+          <div>状态：
+            <span id="mgtv-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="mgtv-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">优酷
+          <span id="youku-ico"></span></div>
+        <div class="box-info" id="youku">
+          <div>状态：
+            <span id="youku-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="youku-ms">0</span>ms</div></div>
+      </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function get_itdog(url,id){return axios.get(url).then(function(response){document.getElementById(id).innerText=response.data.ip+"（"+response.data.address+"）";return response.data}).catch(function(error){console.log(error);document.getElementById(id).innerText="数据获取出错";throw error;})}const requests=[{url:'https://ipv4_cm.itdog.cn/',id:'cm-ipv4'},{url:'https://ipv6_cm.itdog.cn/',id:'cm-ipv6'},{url:'https://ipv4_cu.itdog.cn/',id:'cu-ipv4'},{url:'https://ipv6_cu.itdog.cn/',id:'cu-ipv6'},{url:'https://ipv4_ct.itdog.cn/',id:'ct-ipv4'},{url:'https://ipv6_ct.itdog.cn/',id:'ct-ipv6'},{url:'https://ipv4-overseas.itdog.plus/',id:'hk-ipv4'},{url:'https://ipv6-overseas.itdog.plus/',id:'hk-ipv6'},{url:'https://ipv4.lvhai.org/',id:'haiwai-ipv4'},{url:'https://ipv6.lvhai.org/',id:'haiwai-ipv6'},];Promise.all(requests.map(({url,id})=>get_itdog(url,id)));function get_ip_other(url,id){return axios.get(url).then(function(response){if(id.includes("ipsb")){document.getElementById("ipsb-isp").innerText=response.data.isp;document.getElementById(id).innerText=response.data.ip+"（"+response.data.country+" "+response.data.region+" "+response.data.isp+"）"}else if(id=="myip-la"){document.getElementById(id).innerText=response.data.ip+"（"+response.data.location.country_name+" "+response.data.location.province+" "+response.data.location.city+"）"}else if(id=="ipip-net"){document.getElementById(id).innerText=response.data.data.ip+"（"+response.data.data.location+"）"}else if(id=="ip-api"){document.getElementById(id).innerText=response.data.ip+"（"+response.data.country_name+" "+response.data.city+" "+response.data.organisation+"）"}else if(id=="search"){document.getElementById("search-organization").innerText=response.data.isp;document.getElementById("search-country-code").innerText=response.data.country_code;document.getElementById("search-country").innerText=response.data.country;document.getElementById("search-region").innerText=response.data.region;document.getElementById("search-city").innerText=response.data.city;document.getElementById("search-timezone").innerText=response.data.timezone;document.getElementById("search-tude").innerText=response.data.longitude+","+response.data.latitude}else if(id=="youxian"){document.getElementById(id).innerText=response.data.version}}).catch(function(error){console.log(error);document.getElementById(id).innerText="数据获取出错"})}const requests_ipw=[{url:'https://api-ipv4.ip.sb/geoip/',id:'ipsb-ipv4'},{url:'https://api-ipv6.ip.sb/geoip/',id:'ipsb-ipv6'},{url:'https://api.myip.la/cn?json',id:'myip-la'},{url:'https://myip.ipip.net/json',id:'ipip-net'},{url:'https://ip-api.io/json',id:'ip-api'},{url:'https://test.itdog.cn/',id:'youxian'},];Promise.all(requests_ipw.map(({url,id})=>get_ip_other(url,id)));function get_img_test(url,id){const startTime=performance.now();const img=new Image();img.onload=function(){const endTime=performance.now();const latency=endTime-startTime;document.getElementById(id+"-flag").innerText="可用";document.getElementById(id+"-ms").innerText=Math.floor(latency);document.getElementById(id+"-ico").appendChild(img)};img.onerror=function(event){console.log("img error:"+event);document.getElementById(id+"-flag").innerText="数据获取出错"};const randomParam=Date.now();img.src=url+"?_="+randomParam}const requests_img=[{url:'https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico',id:'wechat'},{url:'https://github.githubassets.com/favicons/favicon.png',id:'github'},{url:'https://www.cloudflare.com/favicon.ico',id:'cloudflare'},{url:'https://www.baidu.com/favicon.ico',id:'baidu'},{url:'https://www.youtube.com/s/desktop/a669eefe/img/favicon.ico',id:'youtube'},{url:'https://www.google.com/favicon.ico',id:'google'},{url:'https://www.openai.com/favicon.ico',id:'openai'},{url:'https://www.x.com/favicon.ico',id:'x'},{url:'https://v.qq.com/favicon.ico',id:'vqq'},{url:'https://www.iqiyi.com/favicon.ico',id:'iqiyi'},{url:'https://www.youku.com/favicon.ico',id:'youku'},{url:'https://www.mgtv.com/favicon.ico',id:'mgtv'},];Promise.all(requests_img.map(({url,id})=>get_img_test(url,id)));function search(){var searchTerm=document.getElementById("searchInput").value;if(searchTerm==""){alert("请先输入搜索 IP！");return false}console.log("搜索词: "+searchTerm);document.getElementById("search").style.display="block";get_ip_other("https://api.ip.sb/geoip/"+searchTerm,"search");return false}
+</script>
+  </body>
+</html>
