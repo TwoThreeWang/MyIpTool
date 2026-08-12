@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="referrer" content="never">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="ip,tools">
+    <meta name="description" content="实时获取当前设备网络 IP 地址，支持多线路，包括中国移动、中国联通、中国电信、海外线路，以及访问谷歌等特殊网站。">
+    <title>IP 工具箱</title></head>
+  
+  <body><a href="https://ip.chaosection.top/cdn-cgi/content?id=eXkyLsWckmwjc3dGi7gIoGWdmHpVHJwsQX7hstbunL4-1786332966.1138153-1.2.1.1-_d6A3Vx9_ZYtxFA3BGMDALfE7Pc6vHVHRx7h3X3WdZ0" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+    <style>body { background: #ecf0f3; margin:0; padding:0; } .header{ background-color:#fff; font-size: larger; font-weight: 600; padding:10px 20px; } .title{ margin: 20px; padding: 10px; font-size: larger; font-weight: 600; line-height: 1em; } .container { display: grid; grid-gap: 5px; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); padding:10px 20px; } .box{ margin:10px; padding:20px; line-height: 2.5em; border-radius: 5px; box-shadow: 18px 18px 30px #d1d9e6, -18px -18px 30px #fff; } .box-title{ font-size: larger; font-weight: 600; line-height: 1em; margin-bottom:20px; padding-left: 10px; border-left-style:solid; } .box-title img{ margin-left: 10px; width: 1em; } .box-info{ color:#242424; } .search-box{ padding:10px 30px; } .search-box input{ line-height: inherit; border: 1px solid #cdcdcd; border-radius: 5px; height: 30px; width: 50%; min-width: 100px; padding: 2px 10px; } .search-box button { margin-left: 5px; padding: 2px 20px; line-height: 2.5em; border: 0; border-radius: 5px; box-shadow: 18px 18px 30px #d1d9e6, -18px -18px 30px #fff; } .search-box button:hover{ box-shadow: inset 18px 18px 30px #d1d9e6, inset -18px -18px 30px #fff; }a {color: #3273dc;cursor: pointer;text-decoration: none;}.ip-row{ font-weight:600; font-size:1.05em; } .ip-lbl{ display:inline-block; min-width:3.4em; } .ip-lbl[data-proto="4"]{ color:#2f6fd0; } .ip-lbl[data-proto="6"]{ color:#1f9c6b; } .ip-val{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break:break-all; } .ip-sub{ color:#5b6472; font-size:smaller; line-height:2em; } .f-row{ color:#242424; }</style>
+    <div class="header">IP 工具箱 <small style="float:right"><a href="/">《 回首页</a> | <a href="https://github.com/TwoThreeWang/MyIpTool" target="_blank">Github</a></small></div>
+    <div class="title">🕵️ IP 查询</div>
+    <div class="search-box">
+      <form onsubmit="return search()">
+        <input type="text" id="searchInput" placeholder="输入 IP 查询，支持 IPV4 和 IPV6">
+        <button type="submit">查询</button></form>
+    </div>
+    <div class="container">
+      <div class="box" id="search" style="display:none">
+        <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" id="search-ip" data-tpl="{ip}">查询中...</span></div>
+        <div class="f-row">地址：<span id="search-addr" data-tpl="{country} {region} {city}">查询中...</span></div>
+        <div class="f-row">ASN：<span id="search-asn" data-tpl="AS{asn} {asn_organization}">查询中...</span></div>
+        <div class="f-row">运营商：<span id="search-isp" data-tpl="{isp}">查询中...</span></div>
+        <div class="f-row">经纬度：<span id="search-tude" data-tpl="{longitude},{latitude}">查询中...</span></div>
+      </div>
+    </div>
+    <div class="title">🕵️ IP 信息</div>
+    <div class="container">
+      <div class="box">
+        <div class="box-title">功能介绍</div>
+        <div class="box-info">1、多个公开数据源交叉核验你的出口 IP 与归属地，结果不一致通常说明走了代理或 CDN。
+          <br>2、IP 行按返回值自动标注 IPv4 或 IPv6，国家 / 地区 / 城市已合并为「地址」一行。
+          <br>3、数据源未返回的字段会自动隐藏该行；本页仅收录可<strong>直连</strong>（CORS 放行或 JSONP）的数据源，真实反映你的出口 IP——不再使用反代（反代会显示反代节点而非你的真实出口）。</div></div>
+      <div class="box">
+        <div class="box-title">IP.SB · IPv4</div>
+        <div class="box-info" id="src-ipsb4" data-api="https://api-ipv4.ip.sb/geoip/">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{country} {region} {city}">测试中...</span></div>
+          <div class="f-row">ASN：<span data-tpl="AS{asn} {asn_organization}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{isp}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{longitude},{latitude}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">IP.SB · IPv6</div>
+        <div class="box-info" id="src-ipsb6" data-api="https://api-ipv6.ip.sb/geoip/">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{country} {region} {city}">测试中...</span></div>
+          <div class="f-row">ASN：<span data-tpl="AS{asn} {asn_organization}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{isp}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{longitude},{latitude}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">MyIP.la</div>
+        <div class="box-info" id="src-myipla" data-api="https://api.myip.la/cn?json">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{country_name} {province} {city}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{longitude},{latitude}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">ipip.net</div>
+        <div class="box-info" id="src-ipipnet" data-api="https://myip.ipip.net/json">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{loc_addr}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{loc_isp}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">央视网</div>
+        <div class="box-info" id="src-cntv" data-api="https://ip.apps.cntv.cn/whereis?client=json">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{country_code} {province_code} {city_code}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{isp_code}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">12306</div>
+        <div class="box-info" id="src-12306" data-api="https://exservice.12306.cn/excater/bonree/grip">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{di}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{address}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">UAPIs</div>
+        <div class="box-info" id="src-uapis" data-api="https://uapis.cn/api/v1/network/myip">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="ip-sub">IP 段：<span data-tpl="{beginip} - {endip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{region}">测试中...</span></div>
+          <div class="f-row">ASN：<span data-tpl="{asn}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{llc}（{isp}）">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{longitude},{latitude}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">太平洋网络</div>
+        <div class="box-info" id="src-pconline" data-api="https://whois.pconline.com.cn/ipJson.jsp" data-jsonp="IPCallBack" data-charset="gbk">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{addr_addr}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{addr_isp}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">bdip（Cloudflare）</div>
+        <div class="box-info" id="src-bdip" data-api="https://bdip.chaosection.top/">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{IP.IP}">测试中...</span></div>
+          <div class="f-row">国家：<span data-tpl="{IP.Country}">测试中...</span></div>
+          <div class="f-row">省/州：<span data-tpl="{IP.Region}">测试中...</span></div>
+          <div class="f-row">城市：<span data-tpl="{IP.City}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{IP.Latitude}, {IP.Longitude}">测试中...</span></div>
+          <div class="f-row">ASN：<span data-tpl="{IP.ASN}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{IP.ASOrganization}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">ipapi.is</div>
+        <div class="box-info" id="src-ipapiis" data-api="https://api.ipapi.is">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">国家：<span data-tpl="{cc}">测试中...</span></div>
+          <div class="f-row">ASN：<span data-tpl="AS{asn_num} {asn_org}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{company_name}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{lat},{lon}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">ipify</div>
+        <div class="box-info" id="src-ipify" data-api="https://api.ipify.org?format=json">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">网易大师</div>
+        <div class="box-info" id="src-163" data-api="https://dashi.163.com/fgw/mailsrv-ipdetail/detail?callback=__cb163" data-jsonp="__cb163">
+          <div class="ip-row"><span class="ip-lbl">IP</span>：<span class="ip-val" data-role="ip" data-tpl="{ip}">测试中...</span></div>
+          <div class="f-row">地址：<span data-tpl="{country} {province} {city}">测试中...</span></div>
+          <div class="f-row">运营商：<span data-tpl="{isp}">测试中...</span></div>
+          <div class="f-row">经纬度：<span data-tpl="{longitude},{latitude}">测试中...</span></div>
+        </div>
+      </div>
+    </div>
+<div class="title">🕵️ 网络联通性</div>
+    <div class="container">
+      <div class="box">
+        <div class="box-title">功能介绍</div>
+        <div class="box-info">通过加载对应网站进行速度测试，延迟值仅供参考，实际会更小。</div></div>
+      <div class="box">
+        <div class="box-title">Google
+          <span id="google-ico"></span></div>
+        <div class="box-info" id="google">
+          <div>状态：
+            <span id="google-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="google-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">YouTube
+          <span id="youtube-ico"></span></div>
+        <div class="box-info" id="youtube">
+          <div>状态：
+            <span id="youtube-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="youtube-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">Github
+          <span id="github-ico"></span></div>
+        <div class="box-info" id="github">
+          <div>状态：
+            <span id="github-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="github-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">CloudFlare
+          <span id="cloudflare-ico"></span></div>
+        <div class="box-info" id="cloudflare">
+          <div>状态：
+            <span id="cloudflare-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="cloudflare-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">ChatGPT
+          <span id="chatgpt-ico"></span></div>
+        <div class="box-info" id="chatgpt">
+          <div>状态：
+            <span id="chatgpt-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="chatgpt-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">X (Twitter)
+          <span id="x-ico"></span></div>
+        <div class="box-info" id="x">
+          <div>状态：
+            <span id="x-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="x-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">微信
+          <span id="wechat-ico"></span></div>
+        <div class="box-info" id="wechat">
+          <div>状态：
+            <span id="wechat-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="wechat-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">百度
+          <span id="baidu-ico"></span></div>
+        <div class="box-info" id="baidu">
+          <div>状态：
+            <span id="baidu-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="baidu-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">腾讯视频
+          <span id="vqq-ico"></span></div>
+        <div class="box-info" id="vqq">
+          <div>状态：
+            <span id="vqq-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="vqq-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">爱奇艺
+          <span id="iqiyi-ico"></span></div>
+        <div class="box-info" id="iqiyi">
+          <div>状态：
+            <span id="iqiyi-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="iqiyi-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">芒果TV
+          <span id="mgtv-ico"></span></div>
+        <div class="box-info" id="mgtv">
+          <div>状态：
+            <span id="mgtv-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="mgtv-ms">0</span>ms</div></div>
+      </div>
+      <div class="box">
+        <div class="box-title">优酷
+          <span id="youku-ico"></span></div>
+        <div class="box-info" id="youku">
+          <div>状态：
+            <span id="youku-flag">测试中...</span></div>
+          <div>延迟：
+            <span id="youku-ms">0</span>ms</div></div>
+      </div>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.0/axios.min.js"></script>
+<script>
+/* ===== 统一自适应读取与回填 v3 =====
+ * 每个块通过 data-api 声明接口地址，data-tpl 声明回填模板，
+ * 由本段 JS 统一拉取、自适应解析 JSON 并填入对应块。
+ * 可选属性：data-jsonp（JSONP 回调名）/ data-charset（脚本编码）/ data-cors="no"（已知无 CORS）
+ */
+var PROXY_BASE = 'https://ippx.chaosection.top/?url=';      /* 自有反代（chaosection.top）；反代代码见 cf-proxy-worker.js；需后端按 ?url= 约定部署 */
+var REQ_TIMEOUT = 10000;  /* 单个请求超时(ms) */
+var BAIDU_WORKER = '';     /* 百度翻译代理 Worker 地址（部署 baidu-mt/cf-mt-worker.js 后获得）；留空则不翻译，退回静态表/英文 */
+
+function flatten(obj, prefix, out){
+  out = out || {};
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)){
+    var keys = Object.keys(obj);
+    if (keys.length === 0){ out[prefix] = obj; }
+    else { for (var i=0;i<keys.length;i++){ flatten(obj[keys[i]], prefix ? prefix+'.'+keys[i] : keys[i], out); } }
+  } else { out[prefix] = obj; }
+  return out;
+}
+/* 容错解析：纯 JSON -> JSONP/前缀包裹 -> 逐个大括号做配平扫描，取能解析出的最大对象 */
+function safeJson(s){
+  if (s && typeof s === 'object') return s;
+  s = String(s);
+  try { return JSON.parse(s); } catch(e){}
+  var best = null, bestLen = 0;
+  for (var i=0;i<s.length;i++){
+    if (s.charAt(i) !== '{') continue;
+    var depth=0, inStr=false, esc=false;
+    for (var j=i;j<s.length;j++){
+      var c = s.charAt(j);
+      if (esc){ esc=false; continue; }
+      if (c === '\\'){ esc=true; continue; }
+      if (c === '"'){ inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (c === '{') depth++;
+      else if (c === '}'){
+        depth--;
+        if (depth === 0){
+          var frag = s.slice(i, j+1);
+          try {
+            var o = JSON.parse(frag);
+            if (o && typeof o === 'object' && frag.length > bestLen){ best = o; bestLen = frag.length; }
+          } catch(e2){}
+          break;
+        }
+      }
+    }
+  }
+  return best;
+}
+function fmtVal(v){
+  if (v === null || v === undefined) return '';
+  if (Array.isArray(v)) return v.filter(function(x){ return x !== '' && x != null; }).join(' ');
+  return (typeof v === 'object') ? '' : String(v);
+}
+/* 字段别名兜底（不含自身键，防止递归） */
+var ALIASES = {
+  isp: ['organisation','org','llc'],
+  country: ['country_name'],
+  region: ['province','prov','regionName'],
+  address: ['addr','location'],
+  ip: ['query','client_ip','di'],
+  org: ['organisation'],
+  lon: ['longitude'],
+  lat: ['latitude']
+};
+/* 英文国名 -> 中文（仅匹配英文键，已返回中文的源不受影响）。
+ * 含中国港澳台，按属地表述。应用于 country / country_name 字段。 */
+var CN_COUNTRIES = {
+  'China':'中国','Hong Kong':'中国香港','Macao':'中国澳门','Taiwan':'中国台湾',
+  'United States':'美国','United Kingdom':'英国','Japan':'日本','South Korea':'韩国',
+  'Korea':'韩国','North Korea':'朝鲜','Russia':'俄罗斯','Germany':'德国','France':'法国',
+  'Canada':'加拿大','Australia':'澳大利亚','Singapore':'新加坡','India':'印度',
+  'Brazil':'巴西','Netherlands':'荷兰','Spain':'西班牙','Italy':'意大利',
+  'Indonesia':'印度尼西亚','Thailand':'泰国','Vietnam':'越南','Malaysia':'马来西亚',
+  'Philippines':'菲律宾','Turkey':'土耳其','Ukraine':'乌克兰','Poland':'波兰',
+  'Sweden':'瑞典','Norway':'挪威','Finland':'芬兰','Ireland':'爱尔兰',
+  'Switzerland':'瑞士','Austria':'奥地利','Belgium':'比利时','Portugal':'葡萄牙',
+  'Mexico':'墨西哥','Argentina':'阿根廷','Chile':'智利','South Africa':'南非',
+  'New Zealand':'新西兰','Denmark':'丹麦','Czech Republic':'捷克','Greece':'希腊',
+  'Romania':'罗马尼亚','Hungary':'匈牙利','Bulgaria':'保加利亚','Croatia':'克罗地亚',
+  'Egypt':'埃及','Saudi Arabia':'沙特阿拉伯','Iran':'伊朗','Iraq':'伊拉克',
+  'Israel':'以色列','United Arab Emirates':'阿联酋','Nigeria':'尼日利亚','Kenya':'肯尼亚',
+  'Pakistan':'巴基斯坦','Bangladesh':'孟加拉国','Sri Lanka':'斯里兰卡',
+  'Mongolia':'蒙古','Kazakhstan':'哈萨克斯坦','Laos':'老挝','Myanmar':'缅甸',
+  'Cambodia':'柬埔寨','Nepal':'尼泊尔','Kyrgyzstan':'吉尔吉斯斯坦',
+  'Luxembourg':'卢森堡','Iceland':'冰岛','Estonia':'爱沙尼亚','Latvia':'拉脱维亚',
+  'Lithuania':'立陶宛','Slovakia':'斯洛伐克','Slovenia':'斯洛文尼亚',
+  'Serbia':'塞尔维亚','Belarus':'白俄罗斯','Georgia':'格鲁吉亚','Armenia':'亚美尼亚',
+  'Azerbaijan':'阿塞拜疆','Qatar':'卡塔尔','Kuwait':'科威特','Jordan':'约旦',
+  'Lebanon':'黎巴嫩','Oman':'阿曼','Colombia':'哥伦比亚','Peru':'秘鲁',
+  'Venezuela':'委内瑞拉','Ecuador':'厄瓜多尔','Uruguay':'乌拉圭',
+  'Costa Rica':'哥斯达黎加','Panama':'巴拿马','Guatemala':'危地马拉'
+};
+/* 英文「省/州」-> 中文（仅匹配英文键，已中文的源不受影响） */
+var CN_REGIONS = {
+  'Beijing':'北京','Shanghai':'上海','Tianjin':'天津','Chongqing':'重庆',
+  'Hebei':'河北','Shanxi':'山西','Liaoning':'辽宁','Jilin':'吉林','Heilongjiang':'黑龙江',
+  'Jiangsu':'江苏','Zhejiang':'浙江','Anhui':'安徽','Fujian':'福建','Jiangxi':'江西',
+  'Shandong':'山东','Henan':'河南','Hubei':'湖北','Hunan':'湖南','Guangdong':'广东',
+  'Hainan':'海南','Sichuan':'四川','Guizhou':'贵州','Yunnan':'云南','Shaanxi':'陕西',
+  'Gansu':'甘肃','Qinghai':'青海','Taiwan':'中国台湾',
+  'Inner Mongolia':'内蒙古','Nei Mongol':'内蒙古','Guangxi':'广西','Tibet':'西藏','Xizang':'西藏',
+  'Ningxia':'宁夏','Xinjiang':'新疆','Hong Kong':'中国香港','Macao':'中国澳门',
+  'Alabama':'亚拉巴马','Alaska':'阿拉斯加','Arizona':'亚利桑那','Arkansas':'阿肯色',
+  'California':'加利福尼亚','Colorado':'科罗拉多','Connecticut':'康涅狄格','Delaware':'特拉华',
+  'Florida':'佛罗里达','Georgia':'佐治亚','Hawaii':'夏威夷','Idaho':'爱达荷','Illinois':'伊利诺伊',
+  'Indiana':'印第安纳','Iowa':'艾奥瓦','Kansas':'堪萨斯','Kentucky':'肯塔基','Louisiana':'路易斯安那',
+  'Maine':'缅因','Maryland':'马里兰','Massachusetts':'马萨诸塞','Michigan':'密歇根','Minnesota':'明尼苏达',
+  'Mississippi':'密西西比','Missouri':'密苏里','Montana':'蒙大拿','Nebraska':'内布拉斯加','Nevada':'内华达',
+  'New Hampshire':'新罕布什尔','New Jersey':'新泽西','New Mexico':'新墨西哥','New York':'纽约州',
+  'North Carolina':'北卡罗来纳','North Dakota':'北达科他','Ohio':'俄亥俄','Oklahoma':'俄克拉荷马',
+  'Oregon':'俄勒冈','Pennsylvania':'宾夕法尼亚','Rhode Island':'罗得岛','South Carolina':'南卡罗来纳',
+  'South Dakota':'南达科他','Tennessee':'田纳西','Texas':'得克萨斯','Utah':'犹他','Vermont':'佛蒙特',
+  'Virginia':'弗吉尼亚','Washington':'华盛顿州','West Virginia':'西弗吉尼亚','Wisconsin':'威斯康星',
+  'Wyoming':'怀俄明','District of Columbia':'哥伦比亚特区','DC':'哥伦比亚特区',
+  'England':'英格兰','Scotland':'苏格兰','Wales':'威尔士','Northern Ireland':'北爱尔兰','Greater London':'大伦敦',
+  'Ontario':'安大略','Quebec':'魁北克','British Columbia':'不列颠哥伦比亚','Alberta':'阿尔伯塔',
+  'Manitoba':'曼尼托巴','Saskatchewan':'萨斯喀彻温','Nova Scotia':'新斯科舍','New Brunswick':'新不伦瑞克',
+  'Newfoundland and Labrador':'纽芬兰与拉布拉多','Prince Edward Island':'爱德华王子岛',
+  'Northwest Territories':'西北领地','Yukon':'育空','Nunavut':'努纳武特',
+  'New South Wales':'新南威尔士','Victoria':'维多利亚','Queensland':'昆士兰','Western Australia':'西澳大利亚',
+  'South Australia':'南澳大利亚','Tasmania':'塔斯马尼亚','Australian Capital Territory':'澳大利亚首都领地',
+  'Northern Territory':'北领地',
+  'Bavaria':'巴伐利亚','Berlin':'柏林','Hamburg':'汉堡','Hesse':'黑森','Saxony':'萨克森',
+  'Baden-Wurttemberg':'巴登-符腾堡','North Rhine-Westphalia':'北莱茵-威斯特法伦','Lower Saxony':'下萨克森',
+  'Rhineland-Palatinate':'莱茵兰-普法尔茨','Brandenburg':'勃兰登堡','Saxony-Anhalt':'萨克森-安哈尔特',
+  'Thuringia':'图林根','Mecklenburg-Vorpommern':'梅克伦堡-前波美拉尼亚','Saarland':'萨尔','Bremen':'不莱梅',
+  'Schleswig-Holstein':'石勒苏益格-荷尔斯泰因',
+  'Ile-de-France':'法兰西岛','Occitanie':'奥克西塔尼','Nouvelle-Aquitaine':'新阿基坦',
+  'Auvergne-Rhone-Alpes':'奥弗涅-罗讷-阿尔卑斯','Hauts-de-France':'上法兰西','Grand Est':'大东部',
+  'Bretagne':'布列塔尼','Normandie':'诺曼底','Pays de la Loire':'卢瓦尔河地区','Centre-Val de Loire':'中央-卢瓦尔河谷',
+  'Bourgogne-Franche-Comte':'勃艮第-弗朗什-孔泰','Corse':'科西嘉',
+  'Moscow':'莫斯科','Saint Petersburg':'圣彼得堡','Novosibirsk':'新西伯利亚','Sverdlovsk':'斯维尔德洛夫斯克','Tatarstan':'鞑靼斯坦',
+  'Tokyo':'东京','Osaka':'大阪','Hokkaido':'北海道','Aichi':'爱知','Kanagawa':'神奈川','Fukuoka':'福冈','Kyoto':'京都','Hyogo':'兵库','Chiba':'千叶','Saitama':'埼玉',
+  'Maharashtra':'马哈拉施特拉','Karnataka':'卡纳塔克','Tamil Nadu':'泰米尔纳德','Delhi':'德里','Uttar Pradesh':'北方邦',
+  'West Bengal':'西孟加拉','Gujarat':'古吉拉特','Kerala':'喀拉拉','Telangana':'特伦甘纳','Rajasthan':'拉贾斯坦','Punjab':'旁遮普',
+  'Sao Paulo':'圣保罗','Rio de Janeiro':'里约热内卢','Minas Gerais':'米纳斯吉拉斯','Bahia':'巴伊亚','Parana':'巴拉那','Rio Grande do Sul':'南里奥格兰德'
+};
+/* 英文「城市」-> 中文（中国主要城市 + 世界主要城市；未收录的城市保留英文，不影响展示） */
+var CN_CITIES = {
+  'Beijing':'北京','Shanghai':'上海','Tianjin':'天津','Chongqing':'重庆',
+  'Guangzhou':'广州','Shenzhen':'深圳','Dongguan':'东莞','Foshan':'佛山','Zhongshan':'中山',
+  'Huizhou':'惠州','Shantou':'汕头','Zhuhai':'珠海','Jiangmen':'江门','Zhaoqing':'肇庆','Qingyuan':'清远',
+  'Nanjing':'南京','Suzhou':'苏州','Wuxi':'无锡','Changzhou':'常州','Xuzhou':'徐州','Nantong':'南通',
+  'Lianyungang':'连云港','Yangzhou':'扬州','Zhenjiang':'镇江','Taizhou':'泰州','Yancheng':'盐城','Huai\'an':'淮安','Suqian':'宿迁',
+  'Hangzhou':'杭州','Ningbo':'宁波','Wenzhou':'温州','Jiaxing':'嘉兴','Huzhou':'湖州','Shaoxing':'绍兴',
+  'Jinhua':'金华','Lishui':'丽水','Quzhou':'衢州','Zhoushan':'舟山',
+  'Hefei':'合肥','Wuhu':'芜湖','Maanshan':'马鞍山','Bengbu':'蚌埠','Huainan':'淮南','Anqing':'安庆','Huangshan':'黄山','Fuyang':'阜阳',
+  'Fuzhou':'福州','Xiamen':'厦门','Quanzhou':'泉州','Zhangzhou':'漳州','Putian':'莆田','Longyan':'龙岩','Sanming':'三明','Nanping':'南平','Ningde':'宁德',
+  'Nanchang':'南昌','Jiujiang':'九江','Ganzhou':'赣州','Yichun':'宜春','Shangrao':'上饶','Jingdezhen':'景德镇','Pingxiang':'萍乡','Xinyu':'新余','Yingtan':'鹰潭',
+  'Jinan':'济南','Qingdao':'青岛','Yantai':'烟台','Weifang':'潍坊','Linyi':'临沂','Zibo':'淄博','Weihai':'威海','Tai\'an':'泰安','Jining':'济宁','Dezhou':'德州','Rizhao':'日照','Binzhou':'滨州','Heze':'菏泽','Dongying':'东营','Zaozhuang':'枣庄',
+  'Zhengzhou':'郑州','Kaifeng':'开封','Luoyang':'洛阳','Nanyang':'南阳','Xinyang':'信阳','Shangqiu':'商丘','Xinxiang':'新乡','Puyang':'濮阳','Anyang':'安阳','Hebi':'鹤壁','Xuchang':'许昌','Luohe':'漯河','Sanmenxia':'三门峡','Zhoukou':'周口','Zhumadian':'驻马店','Pingdingshan':'平顶山','Jiaozuo':'焦作',
+  'Wuhan':'武汉','Xiangyang':'襄阳','Yichang':'宜昌','Jingzhou':'荆州','Huanggang':'黄冈','Shiyan':'十堰','Jingmen':'荆门','Xiaogan':'孝感','Huangshi':'黄石','Xianning':'咸宁','Suizhou':'随州','Ezhou':'鄂州',
+  'Changsha':'长沙','Zhuzhou':'株洲','Xiangtan':'湘潭','Hengyang':'衡阳','Yueyang':'岳阳','Changde':'常德','Zhangjiajie':'张家界','Yiyang':'益阳','Chenzhou':'郴州','Yongzhou':'永州','Huaihua':'怀化','Loudi':'娄底','Shaoyang':'邵阳',
+  'Chengdu':'成都','Mianyang':'绵阳','Deyang':'德阳','Luzhou':'泸州','Yibin':'宜宾','Nanchong':'南充','Dazhou':'达州','Neijiang':'内江','Zigong':'自贡','Ziyang':'资阳','Meishan':'眉山','Guangyuan':'广元','Suining':'遂宁','Leshan':'乐山','Ya\'an':'雅安','Panzhihua':'攀枝花','Bazhong':'巴中',
+  'Guiyang':'贵阳','Zunyi':'遵义','Liupanshui':'六盘水','Anshun':'安顺','Bijie':'毕节','Tongren':'铜仁',
+  'Kunming':'昆明','Dali':'大理','Lijiang':'丽江','Qujing':'曲靖','Yuxi':'玉溪','Baoshan':'保山','Zhaotong':'昭通','Lincang':'临沧','Puer':'普洱',
+  'Xian':'西安','Xianyang':'咸阳','Baoji':'宝鸡','Weinan':'渭南','Hanzhong':'汉中','Yulin':'榆林','Ankang':'安康','Shangluo':'商洛','Yanan':'延安','Tongchuan':'铜川',
+  'Lanzhou':'兰州','Tianshui':'天水','Baiyin':'白银','Wuwei':'武威','Zhangye':'张掖','Jiuquan':'酒泉','Pingliang':'平凉','Qingyang':'庆阳','Dingxi':'定西','Longnan':'陇南','Jiayuguan':'嘉峪关',
+  'Xining':'西宁','Golmud':'格尔木',
+  'Taiyuan':'太原','Datong':'大同','Yangquan':'阳泉','Changzhi':'长治','Jincheng':'晋城','Shuozhou':'朔州','Xinzhou':'忻州','Linfen':'临汾','Yuncheng':'运城','Luliang':'吕梁',
+  'Shijiazhuang':'石家庄','Tangshan':'唐山','Qinhuangdao':'秦皇岛','Handan':'邯郸','Xingtai':'邢台','Baoding':'保定','Zhangjiakou':'张家口','Chengde':'承德','Cangzhou':'沧州','Langfang':'廊坊','Hengshui':'衡水',
+  'Shenyang':'沈阳','Dalian':'大连','Anshan':'鞍山','Fushun':'抚顺','Benxi':'本溪','Dandong':'丹东','Jinzhou':'锦州','Yingkou':'营口','Fuxin':'阜新','Liaoyang':'辽阳','Panjin':'盘锦','Tieling':'铁岭','Chaoyang':'朝阳','Huludao':'葫芦岛',
+  'Changchun':'长春','Jilin':'吉林','Siping':'四平','Liaoyuan':'辽源','Tonghua':'通化','Baishan':'白山','Songyuan':'松原','Baicheng':'白城','Yanbian':'延边',
+  'Harbin':'哈尔滨','Qiqihar':'齐齐哈尔','Jixi':'鸡西','Hegang':'鹤岗','Daqing':'大庆','Yichun':'伊春','Jiamusi':'佳木斯','Qitaihe':'七台河','Mudanjiang':'牡丹江','Heihe':'黑河','Suihua':'绥化',
+  'Hohhot':'呼和浩特','Baotou':'包头','Wuhai':'乌海','Chifeng':'赤峰','Tongliao':'通辽','Ordos':'鄂尔多斯','Hulunbuir':'呼伦贝尔','Bayannur':'巴彦淖尔','Ulanqab':'乌兰察布',
+  'Nanning':'南宁','Guilin':'桂林','Liuzhou':'柳州','Wuzhou':'梧州','Beihai':'北海','Qinzhou':'钦州','Yulin':'玉林','Baise':'百色','Hezhou':'贺州','Hechi':'河池','Laibin':'来宾','Chongzuo':'崇左',
+  'Haikou':'海口','Sanya':'三亚','Danzhou':'儋州',
+  'Urumqi':'乌鲁木齐','Karamay':'克拉玛依','Turpan':'吐鲁番','Hami':'哈密','Kashgar':'喀什','Korla':'库尔勒','Aksu':'阿克苏','Hotan':'和田','Tacheng':'塔城','Altay':'阿勒泰',
+  'Lhasa':'拉萨','Shigatse':'日喀则','Shannan':'山南','Nyingchi':'林芝','Chamdo':'昌都','Nagqu':'那曲','Ngari':'阿里',
+  'Yinchuan':'银川','Wuzhong':'吴忠','Guyuan':'固原','Zhongwei':'中卫','Shizuishan':'石嘴山',
+  'Hong Kong':'香港','Macao':'澳门',
+  'Taipei':'台北','Kaohsiung':'高雄','Taichung':'台中','Tainan':'台南','Taoyuan':'桃园','Hsinchu':'新竹','Keelung':'基隆','Chiayi':'嘉义'
+};
+var CN_WORLD_CITIES = {
+  'Tokyo':'东京','Osaka':'大阪','Yokohama':'横滨','Nagoya':'名古屋','Sapporo':'札幌','Kyoto':'京都',
+  'Seoul':'首尔','Busan':'釜山','Incheon':'仁川',
+  'Singapore':'新加坡','Bangkok':'曼谷','Chiang Mai':'清迈','Kuala Lumpur':'吉隆坡','Penang':'槟城',
+  'Jakarta':'雅加达','Surabaya':'泗水','Bandung':'万隆','Medan':'棉兰',
+  'Manila':'马尼拉','Cebu':'宿务','Quezon':'奎松',
+  'Ho Chi Minh City':'胡志明市','Hanoi':'河内','Da Nang':'岘港',
+  'Mumbai':'孟买','Delhi':'德里','Bangalore':'班加罗尔','Chennai':'金奈','Kolkata':'加尔各答','Hyderabad':'海得拉巴','Pune':'浦那','Ahmedabad':'艾哈迈达巴德','Jaipur':'斋普尔',
+  'Dubai':'迪拜','Abu Dhabi':'阿布扎比','Sharjah':'沙迦','Doha':'多哈',
+  'Riyadh':'利雅得','Jeddah':'吉达','Mecca':'麦加',
+  'Tel Aviv':'特拉维夫','Jerusalem':'耶路撒冷','Haifa':'海法',
+  'Istanbul':'伊斯坦布尔','Ankara':'安卡拉','Izmir':'伊兹密尔',
+  'Moscow':'莫斯科','Saint Petersburg':'圣彼得堡','Novosibirsk':'新西伯利亚','Yekaterinburg':'叶卡捷琳堡',
+  'London':'伦敦','Manchester':'曼彻斯特','Birmingham':'伯明翰','Glasgow':'格拉斯哥','Leeds':'利兹','Liverpool':'利物浦','Bristol':'布里斯托','Edinburgh':'爱丁堡',
+  'Paris':'巴黎','Marseille':'马赛','Lyon':'里昂','Toulouse':'图卢兹','Nice':'尼斯','Bordeaux':'波尔多',
+  'Berlin':'柏林','Munich':'慕尼黑','Hamburg':'汉堡','Frankfurt':'法兰克福','Cologne':'科隆','Stuttgart':'斯图加特','Dusseldorf':'杜塞尔多夫','Leipzig':'莱比锡',
+  'Madrid':'马德里','Barcelona':'巴塞罗那','Valencia':'瓦伦西亚','Seville':'塞维利亚','Malaga':'马拉加',
+  'Rome':'罗马','Milan':'米兰','Naples':'那不勒斯','Turin':'都灵','Florence':'佛罗伦萨','Venice':'威尼斯',
+  'Amsterdam':'阿姆斯特丹','Rotterdam':'鹿特丹','The Hague':'海牙',
+  'Brussels':'布鲁塞尔','Antwerp':'安特卫普',
+  'Vienna':'维也纳','Graz':'格拉茨',
+  'Zurich':'苏黎世','Geneva':'日内瓦','Basel':'巴塞尔','Bern':'伯尼',
+  'Stockholm':'斯德哥尔摩','Gothenburg':'哥德堡','Malmo':'马尔默',
+  'Oslo':'奥斯陆','Bergen':'卑尔根',
+  'Copenhagen':'哥本哈根','Aarhus':'奥胡斯',
+  'Helsinki':'赫尔辛基','Tampere':'坦佩雷',
+  'Dublin':'都柏林','Cork':'科克',
+  'Lisbon':'里斯本','Porto':'波尔图',
+  'Warsaw':'华沙','Krakow':'克拉科夫','Katowice':'卡托维兹',
+  'Prague':'布拉格','Brno':'布尔诺',
+  'Budapest':'布达佩斯','Bucharest':'布加勒斯特','Cluj':'克卢日',
+  'Athens':'雅典','Thessaloniki':'塞萨洛尼基',
+  'Kyiv':'基辅','Lviv':'利沃夫',
+  'Cairo':'开罗','Alexandria':'亚历山大','Casablanca':'卡萨布兰卡','Lagos':'拉各斯','Nairobi':'内罗毕','Addis Ababa':'亚的斯亚贝巴',
+  'Johannesburg':'约翰内斯堡','Cape Town':'开普敦','Durban':'德班','Pretoria':'比勒陀利亚',
+  'New York':'纽约','Los Angeles':'洛杉矶','Chicago':'芝加哥','Houston':'休斯顿','Phoenix':'凤凰城','Philadelphia':'费城','San Antonio':'圣安东尼奥','San Diego':'圣地亚哥','Dallas':'达拉斯','San Jose':'圣何塞','Austin':'奥斯汀','Jacksonville':'杰克逊维尔','San Francisco':'旧金山','Seattle':'西雅图','Denver':'丹佛','Boston':'波士顿','Las Vegas':'拉斯维加斯','Portland':'波特兰','Atlanta':'亚特兰大','Miami':'迈阿密','Washington':'华盛顿','Detroit':'底特律','Minneapolis':'明尼阿波利斯','Tampa':'坦帕','Orlando':'奥兰多','Sacramento':'萨克拉门托','Kansas City':'堪萨斯城','Columbus':'哥伦布','Charlotte':'夏洛特','Indianapolis':'印第安纳波利斯','Nashville':'纳什维尔','Baltimore':'巴尔的摩','Milwaukee':'密尔沃基','Albuquerque':'阿尔伯克基','Tucson':'图森','Fresno':'弗雷斯诺','Mesa':'梅萨','Raleigh':'罗利','Omaha':'奥马哈','Cleveland':'克利夫兰','Wichita':'威奇托','Arlington':'阿灵顿','New Orleans':'新奥尔良','Virginia Beach':'弗吉尼亚海滩',
+  'Toronto':'多伦多','Vancouver':'温哥华','Montreal':'蒙特利尔','Ottawa':'渥太华','Calgary':'卡尔加里','Edmonton':'埃德蒙顿','Winnipeg':'温尼伯','Quebec City':'魁北克城','Hamilton':'汉密尔顿',
+  'Mexico City':'墨西哥城','Guadalajara':'瓜达拉哈拉','Monterrey':'蒙特雷',
+  'Sao Paulo':'圣保罗','Rio de Janeiro':'里约热内卢','Brasilia':'巴西利亚','Salvador':'萨尔瓦多','Fortaleza':'福塔莱萨','Belo Horizonte':'贝洛奥里藏特',
+  'Buenos Aires':'布宜诺斯艾利斯','Cordoba':'科尔多瓦','Rosario':'罗萨里奥',
+  'Santiago':'圣地亚哥','Valparaiso':'瓦尔帕莱索',
+  'Bogota':'波哥大','Medellin':'麦德林',
+  'Lima':'利马','Arequipa':'阿雷基帕',
+  'Caracas':'加拉加斯','Quito':'基多','La Paz':'拉巴斯',
+  'Sydney':'悉尼','Melbourne':'墨尔本','Brisbane':'布里斯班','Perth':'珀斯','Adelaide':'阿德莱德','Gold Coast':'黄金海岸','Canberra':'堪培拉',
+  'Auckland':'奥克兰','Wellington':'惠灵顿','Christchurch':'基督城'
+};
+/* ISO 3166-1 alpha-2 国家代码 -> 中文（bdip 等接口返回二字码时用） */
+var CN_ISO2 = {
+  'CN':'中国','HK':'中国香港','MO':'中国澳门','TW':'中国台湾',
+  'US':'美国','GB':'英国','JP':'日本','KR':'韩国','KP':'朝鲜','RU':'俄罗斯','DE':'德国','FR':'法国',
+  'CA':'加拿大','AU':'澳大利亚','SG':'新加坡','IN':'印度','BR':'巴西','NL':'荷兰','ES':'西班牙','IT':'意大利',
+  'ID':'印度尼西亚','TH':'泰国','VN':'越南','MY':'马来西亚','PH':'菲律宾','TR':'土耳其','UA':'乌克兰','PL':'波兰',
+  'SE':'瑞典','NO':'挪威','FI':'芬兰','IE':'爱尔兰','CH':'瑞士','AT':'奥地利','BE':'比利时','PT':'葡萄牙',
+  'MX':'墨西哥','AR':'阿根廷','CL':'智利','ZA':'南非','NZ':'新西兰','DK':'丹麦','CZ':'捷克','GR':'希腊',
+  'RO':'罗马尼亚','HU':'匈牙利','BG':'保加利亚','HR':'克罗地亚','EG':'埃及','SA':'沙特阿拉伯','IR':'伊朗',
+  'IQ':'伊拉克','IL':'以色列','AE':'阿联酋','NG':'尼日利亚','KE':'肯尼亚','PK':'巴基斯坦','BD':'孟加拉国',
+  'LK':'斯里兰卡','MN':'蒙古','KZ':'哈萨克斯坦','LA':'老挝','MM':'缅甸','KH':'柬埔寨','NP':'尼泊尔',
+  'KG':'吉尔吉斯斯坦','LU':'卢森堡','IS':'冰岛','EE':'爱沙尼亚','LV':'拉脱维亚','LT':'立陶宛','SK':'斯洛伐克',
+  'SI':'斯洛文尼亚','RS':'塞尔维亚','BY':'白俄罗斯','GE':'格鲁吉亚','AM':'亚美尼亚','AZ':'阿塞拜疆','QA':'卡塔尔',
+  'KW':'科威特','JO':'约旦','LB':'黎巴嫩','OM':'阿曼','CO':'哥伦比亚','PE':'秘鲁','VE':'委内瑞拉','EC':'厄瓜多尔',
+  'UY':'乌拉圭','CR':'哥斯达黎加','PA':'巴拿马','GT':'危地马拉'
+};
+/* 地理字段中文化：按字段类型选对应映射（仅匹配英文键，已中文源不误伤） */
+function cnGeo(name, val){
+  if (val === undefined || val === null || val === '') return val;
+  var lc = String(name).split('.').pop().trim().toLowerCase();
+  var v = String(val).trim();
+  if (lc === 'country' || lc === 'country_name' || lc === 'cc' || lc === 'country_code'){ return CN_COUNTRIES[v] || CN_ISO2[String(v).toUpperCase()] || val; }
+  if (lc === 'region' || lc === 'regionname' || lc === 'province' || lc === 'prov' || lc === 'state'){ return CN_REGIONS[v] || val; }
+  if (lc === 'city'){ return CN_CITIES[v] || CN_WORLD_CITIES[v] || val; }
+  return val;
+}
+/* 自适应取值：完整路径 -> 末段字段名 -> 别名兜底 */
+function resolveVal(flat, name){
+  name = String(name).trim();
+  if (flat[name] !== undefined && flat[name] !== null && flat[name] !== '') return fmtVal(flat[name]);
+  var seg = name.split('.').pop();
+  for (var key in flat){
+    if (key.split('.').pop() === seg && flat[key] !== undefined && flat[key] !== null && flat[key] !== '') {
+      var fv = fmtVal(flat[key]);
+      if (fv !== '') return fv;
+    }
+  }
+  var al = ALIASES[name];
+  if (al){ for (var i=0;i<al.length;i++){ var v = resolveVal(flat, al[i]); if (v) return v; } }
+  return '';
+}
+/* 空占位符先打标记，再连同紧邻的分隔符一并清除。
+ * 用标记而非无差别正则，避免误伤数据本身的符号（如西经 -118.27、IP 段的 " - "）。 */
+var EMPTY_MARK = '\u0000';
+function cleanup(text){
+  return text.replace(/\s*[,，\-\/、]?\s*\u0000\s*[,，\-\/、]?\s*/g, ' ')
+             .replace(/#+/g,' ')
+             .replace(/（\s*）/g,'').replace(/\(\s*\)/g,'')
+             .replace(/\s*（\s*/g,'（').replace(/\s*）\s*/g,'）')
+             .replace(/^AS\s*$/,'')                    /* ASN 全落空只剩前缀 */
+             .replace(/\s{2,}/g,' ').trim();
+}
+/* IP 行：按返回值自动判定协议，改写标签为 IPv4 / IPv6 */
+function markIpProto(span, val){
+  var row = span.parentNode;
+  var lbl = row && row.querySelector ? row.querySelector('.ip-lbl') : null;
+  if (!lbl) return;
+  var v = String(val || '').trim();
+  if (/^(\d{1,3}\.){3}\d{1,3}$/.test(v)){ lbl.innerText = 'IPv4'; lbl.setAttribute('data-proto','4'); }
+  else if (v.indexOf(':') > -1 && /^[0-9a-fA-F:.]+$/.test(v)){ lbl.innerText = 'IPv6'; lbl.setAttribute('data-proto','6'); }
+  else { lbl.innerText = 'IP'; lbl.removeAttribute('data-proto'); }
+}
+/* 定位字段所在行，供空值隐藏使用 */
+function rowEl(span){
+  if (span.closest){ var r = span.closest('.f-row, .ip-row, .ip-sub'); if (r) return r; }
+  return span.parentNode;
+}
+function setRow(span, visible){
+  var r = rowEl(span);
+  if (r && r.style) r.style.display = visible ? '' : 'none';
+}
+function protoOf(v){
+  v = String(v == null ? '' : v).trim();
+  if (/^(\d{1,3}\.){3}\d{1,3}$/.test(v)) return 'IPv4';
+  if (v.indexOf(':') > -1 && /^[0-9a-fA-F:.]+$/.test(v)) return 'IPv6';
+  return 'IP';
+}
+/* 双栈/多 IP 源会用逗号或空格返回多个地址（如 "IPv6, IPv4"），拆成独立行 */
+function splitIps(text){
+  return String(text || '').split(/[,\s]+/).map(function(s){ return s.trim(); })
+         .filter(function(s){ return s; });
+}
+function fillSpan(span, json){
+  var tpl = span.getAttribute('data-tpl') || '{ip}';
+  var data = (typeof json === 'string') ? (safeJson(json) || {}) : (json || {});
+  var flat = flatten(data);
+  var text = tpl.replace(/\{([^}]+)\}/g, function(_, name){
+    var raw = resolveVal(flat, name);
+    raw = cnGeo(name, raw);
+    return raw || EMPTY_MARK;
+  });
+  text = cleanup(text);
+  if (span.getAttribute('data-role') === 'ip'){
+    var ips = splitIps(text);
+    var box = span.closest ? span.closest('.box-info') : null;
+    /* 先清掉上一次渲染产生的子 IP 行，避免重复追加（搜索复用场景） */
+    if (box){
+      var oldSubs = box.querySelectorAll('.ip-sub');
+      for (var si = 0; si < oldSubs.length; si++){ if (oldSubs[si].parentNode) oldSubs[si].parentNode.removeChild(oldSubs[si]); }
+    }
+    span.innerText = ips[0] || '未获取';   /* IP 行始终保留，卡片不会整张空掉 */
+    markIpProto(span, ips[0]);
+    setRow(span, true);
+    /* 多个 IP 时，其余的各自独立成行，并带协议标签 */
+    if (box && ips.length > 1){
+      var ipRow = span.closest ? span.closest('.ip-row') : span.parentNode;
+      for (var mi = 1; mi < ips.length; mi++){
+        var sub = document.createElement('div');
+        sub.className = 'ip-sub';
+        var sl = document.createElement('span');
+        sl.className = 'ip-lbl';
+        var pr = protoOf(ips[mi]);
+        sl.innerText = pr;
+        if (pr === 'IPv4') sl.setAttribute('data-proto', '4');
+        else if (pr === 'IPv6') sl.setAttribute('data-proto', '6');
+        var sv = document.createElement('span');
+        sv.className = 'ip-val';
+        sv.innerText = ips[mi];
+        sub.appendChild(sl);
+        sub.appendChild(document.createTextNode('：'));
+        sub.appendChild(sv);
+        if (ipRow && ipRow.parentNode) ipRow.parentNode.insertBefore(sub, ipRow.nextSibling);
+        else box.appendChild(sub);
+      }
+    }
+  } else {
+    span.innerText = text;
+    setRow(span, !!text);               /* 该源未返回此字段 -> 整行隐藏 */
+  }
+}
+function failSpan(span){
+  if (span.getAttribute('data-role') !== 'ip'){ span.innerText = ''; setRow(span, false); return; }
+  var noCors = span.getAttribute('data-cors') === 'no' ||
+               (span.closest && span.closest('[data-cors="no"]'));
+  span.innerText = noCors ? '跨域受限（需配置代理）' : '数据获取出错';
+  markIpProto(span, '');
+  setRow(span, true);
+}
+/* 字段派生：部分源把"运营商"拼接在地址后（如太平洋 addr="浙江省杭州市 电信"）。
+ * 在此按最后一个空格拆出独立字段，供模板单独使用。key 为块容器 id。 */
+var DERIVE = {
+  'src-pconline': function(d){
+    var v = (d.addr != null) ? d.addr : (d.pro != null ? d.pro : '');
+    var s = String(v).replace(/^\s+/, '').trim();   /* 去前导空格（如海外 IP " 美国"） */
+    if (!s) return;
+    var idx = s.lastIndexOf(' ');
+    if (idx > 0){ d.addr_addr = s.slice(0, idx).trim(); d.addr_isp = s.slice(idx+1).trim(); }
+    else { d.addr_addr = s; d.addr_isp = ''; }
+  },
+  /* ipip.net：location 为数组，末项是运营商，其余拼为地址 */
+  'src-ipipnet': function(d){
+    var loc = d.data && d.data.location;
+    if (!Array.isArray(loc) || !loc.length) return;
+    d.loc_isp = (loc[loc.length - 1] == null ? '' : String(loc[loc.length - 1])).trim();
+    d.loc_addr = loc.slice(0, -1)
+      .filter(function(x){ return x !== '' && x != null; })
+      .join(' ').replace(/\s+/g, ' ').trim();
+  }
+};
+function applyDerive(el, d){ var f = DERIVE[el.id]; if (f && d && typeof d === 'object') f(d); }
+/* JSONP：绕过 CORS，并可按 data-charset 正确解码 GBK 等编码 */
+function fetchJsonp(url, cbName, charset){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement('script'), done = false, prev = window[cbName];
+    function clean(){ window[cbName] = prev; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[cbName] = function(data){ done = true; clean(); resolve(data); };
+    s.src = url; if (charset) s.charset = charset;
+    s.onerror = function(){ if(!done){ clean(); reject(new Error('jsonp error')); } };
+    setTimeout(function(){ if(!done){ clean(); reject(new Error('jsonp timeout')); } }, REQ_TIMEOUT);
+    document.head.appendChild(s);
+  });
+}
+function fetchJson(url, opt){
+  opt = opt || {};
+  if (opt.jsonp) return fetchJsonp(url, opt.jsonp, opt.charset);
+  if (opt.cors === 'no' && PROXY_BASE) url = PROXY_BASE + encodeURIComponent(url);
+  if (typeof AbortController !== 'undefined' && typeof fetch !== 'undefined'){
+    var ac = new AbortController();
+    var t = setTimeout(function(){ ac.abort(); }, REQ_TIMEOUT);
+    return fetch(url, { signal: ac.signal }).then(function(r){ clearTimeout(t); return r.text(); })
+      .then(function(txt){ return safeJson(txt) || {}; });
+  }
+  if (typeof axios !== 'undefined') return axios.get(url, { timeout: REQ_TIMEOUT }).then(function(r){ return r.data; });
+  return Promise.reject(new Error('no fetch'));
+}
+function spanOpt(span){
+  return { jsonp: span.getAttribute('data-jsonp'), charset: span.getAttribute('data-charset'), cors: span.getAttribute('data-cors') };
+}
+/* 百度翻译兜底：把静态表未覆盖、仍是英文的地理字段批量翻成中文。
+ * 静态 CN_* 表已覆盖常见国家/省/市（零调用、即时），此处只补表外新值。
+ * 经 Worker /mt/text 一次调用完成，结果按内容缓存（重复加载 0 调用）。
+ * BAIDU_WORKER 留空则整段跳过，退回静态表/英文，不影响页面。 */
+async function baiduTranslateRemaining(){
+  if (!BAIDU_WORKER) return;
+  var map = {}, uniq = [];
+  var nodes = document.querySelectorAll('.f-row span[data-tpl]');
+  Array.prototype.forEach.call(nodes, function(el){
+    var t = (el.textContent || '').trim();
+    if (!t) return;
+    if (/[一-鿿]/.test(t)) return;        // 已有中文
+    if (!/[A-Za-z]/.test(t)) return;       // 非英文
+    if (/[0-9]/.test(t)) return;           // 含数字（IP/经纬/ASN/邮编）跳过，避免翻错
+    if (!map[t]){ map[t] = []; uniq.push(t); }
+    map[t].push(el);
+  });
+  if (!uniq.length) return;
+  try{
+    var q = uniq.join('\n');
+    var r = await fetch(BAIDU_WORKER + '/mt/text', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ q:q, from:'auto', to:'zh' })
+    });
+    if (!r.ok) return;
+    var j = await r.json();
+    var list = j.results || [];            // 按源行有序返回，下标与 uniq 对齐
+    uniq.forEach(function(t, i){
+      var item = list[i];
+      var zh = item && item.dst ? item.dst.trim() : '';
+      if (zh && zh !== t){
+        Array.prototype.forEach.call(map[t], function(el){ el.textContent = zh; });
+      }
+    });
+  }catch(e){ /* 翻译失败不影响展示，保留静态表/英文结果 */ }
+}
+function loadSpanP(span){
+  var url = span.getAttribute('data-api');
+  if (!url) return Promise.resolve();
+  return fetchJson(url, spanOpt(span)).then(function(d){ fillSpan(span, d); }).catch(function(){ failSpan(span); });
+}
+function loadAll(){
+  var proms = [];
+  Array.prototype.forEach.call(document.querySelectorAll('[data-api]'), function(el){
+    if (el.tagName === 'SPAN'){ proms.push(loadSpanP(el)); return; }
+    /* 块级容器：拉一次，回填所有未自带 data-api 的子 span */
+    var kids = el.querySelectorAll('span[data-tpl]:not([data-api])');
+    var p = fetchJson(el.getAttribute('data-api'), spanOpt(el))
+      .then(function(d){ applyDerive(el, d); Array.prototype.forEach.call(kids, function(sp){ fillSpan(sp, d); }); })
+      .catch(function(){ Array.prototype.forEach.call(kids, failSpan); });
+    proms.push(p);
+    Array.prototype.forEach.call(el.querySelectorAll('span[data-api]'), function(s){ proms.push(loadSpanP(s)); });
+  });
+  return Promise.all(proms);
+}
+function search(){
+  var term = document.getElementById("searchInput").value;
+  if (term == ""){ alert("请先输入搜索 IP！"); return false; }
+  var box = document.getElementById("search");
+  box.style.display = "block";
+  var spans = box.querySelectorAll('span[data-tpl]');
+  fetchJson("https://api.ip.sb/geoip/" + encodeURIComponent(term))
+    .then(function(d){ Array.prototype.forEach.call(spans, function(sp){ fillSpan(sp, d); }); })
+    .catch(function(){ Array.prototype.forEach.call(spans, failSpan); })
+    .then(baiduTranslateRemaining);
+  return false;
+}
+loadAll().then(baiduTranslateRemaining).catch(baiduTranslateRemaining);
+
+function testWeb(url, id, img_path) {const startTime=performance.now();const img=new Image();const timeout=setTimeout(()=>{handleFailure('连接超时（5秒）')},5000);function handleSuccess(){clearTimeout(timeout);const endTime=performance.now();const duration=(endTime-startTime).toFixed(0);document.getElementById(id+"-flag").innerText="可用";document.getElementById(id+"-ms").innerText=Math.floor(duration);document.getElementById(id+"-ico").innerHTML='<img src="'+img_path+'" onerror="this.src=\'errimg.png\'" alt="'+id+'"/>'}function handleFailure(reason){clearTimeout(timeout);document.getElementById(id+"-flag").innerText="数据获取出错";document.getElementById(id+"-ico").innerHTML='<img src="errimg.png" alt="'+id+'"/>'}fetch(url,{mode:'no-cors',cache:'no-store'}).then(handleSuccess).catch((err)=>{console.log(err);img.onload=handleSuccess;img.onerror=()=>handleFailure('无法加载网站');img.src=url})}const requests_img=[{url:'https://weixin.qq.com/',id:'wechat',img:'https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon64_appwx_logo.png'},{url:'https://github.com/',id:'github',img:'https://github.com/favicon.ico'},{url:'https://www.cloudflare.com/',id:'cloudflare',img:'https://www.cloudflare.com/favicon.ico'},{url:'https://www.baidu.com/',id:'baidu',img:'https://www.baidu.com/favicon.ico'},{url:'https://www.youtube.com/',id:'youtube',img:'https://www.youtube.com/favicon.ico'},{url:'https://www.google.com/',id:'google',img:'https://www.google.com/favicon.ico'},{url:'https://chatgpt.com/',id:'chatgpt',img:'https://chatgpt.com/favicon.ico'},{url:'https://www.x.com/',id:'x',img:'https://www.x.com/favicon.ico'},{url:'https://v.qq.com/',id:'vqq',img:'https://v.qq.com/favicon.ico'},{url:'https://www.iqiyi.com/',id:'iqiyi',img:'https://www.iqiyi.com/favicon.ico'},{url:'https://www.youku.com/',id:'youku',img:'https://img.alicdn.com/imgextra/i2/O1CN01BeAcgL1ywY0G5nSn8_!!6000000006643-2-tps-195-195.png'},{url:'https://www.mgtv.com/',id:'mgtv',img:'https://www.mgtv.com/favicon.ico'},];Promise.all(requests_img.map(({url,id,img})=>testWeb(url,id,img)));
+</script>
+  <script>window.__CF$cv$params={r:'a28bf44e3d705708',t:'MTc4NjMzMjk2Ng==',u:'019fe9bded0b7d83a1a562b6f2c52a08',ut:'iGtjFR8w3T7yVT1PQqvAN_aVviUm9IJ0giWDazlauGM-1786332966-1.2.1.1-u0Ld.PPVRdCHVSRtzrlSnDK.isTaFuun8IFTEjoDK1CiPgGspacg1UhDWikPxRp5Gfwq_NnAJX_1yU4OtACSsVclwogiM6Tquvg_uQtSpX4',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
